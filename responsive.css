@@ -1,0 +1,160 @@
+/* Responsive styles for Solar System Animation */
+
+/* Base responsive adjustments */
+@media screen and (max-width: 1200px) {
+    .solar-system {
+        transform: scale(0.9);
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .solar-system {
+        transform: scale(0.8);
+    }
+    
+    .controls {
+        bottom: 10px;
+        left: 10px;
+        font-size: 12px;
+    }
+    
+    .toggle-btn {
+        padding: 4px 8px;
+        margin-right: 3px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .solar-system {
+        transform: scale(0.7);
+    }
+    
+    .planet-info {
+        width: 200px;
+        top: 10px;
+        right: 10px;
+        padding: 10px;
+    }
+    
+    .planet-info h2 {
+        font-size: 16px;
+    }
+    
+    .planet-info p {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .solar-system {
+        transform: scale(0.5);
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .toggle-btn {
+        margin-bottom: 5px;
+    }
+    
+    .planet-info {
+        width: 180px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+    /* Better handle touch events */
+    .planet, .sun {
+        cursor: pointer;
+    }
+    
+    /* Make buttons larger for touch */
+    .toggle-btn {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+    
+    /* Show labels by default on touch devices */
+    .planet-label {
+        opacity: 0.7;
+    }
+    
+    /* Larger close button for info panel */
+    .close-btn {
+        font-size: 20px;
+        padding: 5px;
+    }
+}
+
+/* Portrait orientation on mobile */
+@media screen and (max-width: 576px) and (orientation: portrait) {
+    .solar-system {
+        transform: scale(0.4);
+    }
+    
+    /* Stack controls at bottom */
+    .controls {
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 90%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .solar-system {
+        transform: scale(0.4);
+    }
+    
+    /* Move controls to side */
+    .controls {
+        top: 10px;
+        bottom: auto;
+    }
+    
+    .planet-info {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}
+
+/* High resolution screens */
+@media screen and (min-width: 1600px) {
+    .solar-system {
+        transform: scale(1.2);
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: white;
+        color: black;
+    }
+    
+    .controls, 
+    .star {
+        display: none !important;
+    }
+    
+    .solar-system {
+        transform: scale(0.8) !important;
+    }
+    
+    .planet-info {
+        position: static;
+        display: block;
+        width: 100%;
+        margin: 20px 0;
+        break-inside: avoid;
+    }
+}

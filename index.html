@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Solar System Animation</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        
+        .solar-system {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            transition: transform 0.2s ease-out;
+        }
+        
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff5e00, #ffac30);
+            box-shadow: 0 0 50px #ff5e00, 0 0 100px #ff5e00;
+            z-index: 10;
+            cursor: pointer;
+        }
+        
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transform-origin: center center;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .planet-label {
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-shadow: 0 0 5px black;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .planet:hover + .planet-label {
+            opacity: 1;
+        }
+        
+        /* Mercury */
+        #mercury-orbit {
+            width: 160px;
+            height: 160px;
+        }
+        
+        #mercury {
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #bcc6c9, #8a9294);
+            box-shadow: 0 0 10px rgba(188, 198, 201, 0.6);
+        }
+        
+        /* Venus */
+        #venus-orbit {
+            width: 220px;
+            height: 220px;
+        }
+        
+        #venus {
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #e7cdcd, #c7a6a6);
+            box-shadow: 0 0 10px rgba(231, 205, 205, 0.6);
+        }
+        
+        /* Earth */
+        #earth-orbit {
+            width: 280px;
+            height: 280px;
+        }
+        
+        #earth {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #6b93d6, #3e6baf);
+            box-shadow: 0 0 10px rgba(107, 147, 214, 0.6);
+        }
+        
+        /* Mars */
+        #mars-orbit {
+            width: 340px;
+            height: 340px;
+        }
+        
+        #mars {
+            width: 14px;
+            height: 14px;
+            background: radial-gradient(circle, #c1440e, #a13609);
+            box-shadow: 0 0 10px rgba(193, 68, 14, 0.6);
+        }
+        
+        /* Jupiter */
+        #jupiter-orbit {
+            width: 450px;
+            height: 450px;
+        }
+        
+        #jupiter {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #e0ae6f, #be8b49);
+            box-shadow: 0 0 15px rgba(224, 174, 111, 0.6);
+        }
+        
+        /* Saturn */
+        #saturn-orbit {
+            width: 520px;
+            height: 520px;
+        }
+        
+        #saturn {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #dfd3a9, #c9bb7a);
+            box-shadow: 0 0 15px rgba(223, 211, 169, 0.6);
+        }
+        
+        #saturn-rings {
+            position: absolute;
+            width: 40px;
+            height: 10px;
+            background-color: rgba(223, 211, 169, 0.5);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
+        /* Uranus */
+        #uranus-orbit {
+            width: 590px;
+            height: 590px;
+        }
+        
+        #uranus {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #c1e7e7, #91c6c6);
+            box-shadow: 0 0 15px rgba(193, 231, 231, 0.6);
+        }
+        
+        /* Neptune */
+        #neptune-orbit {
+            width: 660px;
+            height: 660px;
+        }
+        
+        #neptune {
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, #5b5ddf, #3e40a8);
+            box-shadow: 0 0 15px rgba(91, 93, 223, 0.6);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        .toggle-btn {
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #555;
+        }
+
+        .planet-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 100;
+        }
+
+        .planet-info h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .planet-info p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Tutorial Modal styles */
+        .tutorial-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .tutorial-content {
+            background-color: rgba(20, 20, 40, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .tutorial-content h2 {
+            color: #4a90e2;
+            margin-top: 0;
+        }
+
+        .tutorial-steps {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .tutorial-step {
+            margin-bottom: 20px;
+        }
+
+        .tutorial-step h3 {
+            color: #4a90e2;
+            margin-bottom: 5px;
+        }
+
+        .tutorial-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tutorial-btn:hover {
+            background-color: #357ab7;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="solar-system">
+        <div class="sun" title="The Sun"></div>
+        
+        <!-- Mercury -->
+        <div class="orbit" id="mercury-orbit"></div>
+        <div class="planet" id="mercury" data-name="Mercury"></div>
+        <div class="planet-label" id="mercury-label">Mercury</div>
+        
+        <!-- Venus -->
+        <div class="orbit" id="venus-orbit"></div>
+        <div class="planet" id="venus" data-name="Venus"></div>
+        <div class="planet-label" id="venus-label">Venus</div>
+        
+        <!-- Earth -->
+        <div class="orbit" id="earth-orbit"></div>
+        <div class="planet" id="earth" data-name="Earth"></div>
+        <div class="planet-label" id="earth-label">Earth</div>
+        
+        <!-- Mars -->
+        <div class="orbit" id="mars-orbit"></div>
+        <div class="planet" id="mars" data-name="Mars"></div>
+        <div class="planet-label" id="mars-label">Mars</div>
+        
+        <!-- Jupiter -->
+        <div class="orbit" id="jupiter-orbit"></div>
+        <div class="planet" id="jupiter" data-name="Jupiter"></div>
+        <div class="planet-label" id="jupiter-label">Jupiter</div>
+        
+        <!-- Saturn -->
+        <div class="orbit" id="saturn-orbit"></div>
+        <div class="planet" id="saturn" data-name="Saturn"></div>
+        <div class="planet" id="saturn-rings"></div>
+        <div class="planet-label" id="saturn-label">Saturn</div>
+        
+        <!-- Uranus -->
+        <div class="orbit" id="uranus-orbit"></div>
+        <div class="planet" id="uranus" data-name="Uranus"></div>
+        <div class="planet-label" id="uranus-label">Uranus</div>
+        
+        <!-- Neptune -->
+        <div class="orbit" id="neptune-orbit"></div>
+        <div class="planet" id="neptune" data-name="Neptune"></div>
+        <div class="planet-label" id="neptune-label">Neptune</div>
+    </div>
+
+    <div class="controls">
+        <button class="toggle-btn" id="toggle-orbits">Toggle Orbits</button>
+        <button class="toggle-btn" id="toggle-labels">Toggle Labels</button>
+        <button class="toggle-btn" id="reset-view">Reset View</button>
+        <div>Zoom: Mouse Wheel | Pan: Click and Drag</div>
+    </div>
+
+    <div class="planet-info" id="planet-info">
+        <button class="close-btn" id="close-info">×</button>
+        <h2 id="info-title">Planet Name</h2>
+        <div id="info-content">
+            <p id="info-distance"></p>
+            <p id="info-orbit-period"></p>
+            <p id="info-diameter"></p>
+            <p id="info-description"></p>
+        </div>
+    </div>
+
+    <div class="tutorial-modal" id="tutorial-modal">
+        <div class="tutorial-content">
+            <h2>Welcome to Solar System Animation!</h2>
+            <div class="tutorial-steps">
+                <div class="tutorial-step">
+                    <h3>1. Explore the Planets</h3>
+                    <p>Watch as the planets orbit around the sun at their relative speeds.</p>
+                </div>
+                <div class="tutorial-step">
+                    <h3>2. Interact with the Solar System</h3>
+                    <p><strong>Click on any planet</strong> to learn more about it.</p>
+                    <p><strong>Use mouse wheel</strong> to zoom in and out.</p>
+                    <p><strong>Click and drag</strong> to move around.</p>
+                </div>
+                <div class="tutorial-step">
+                    <h3>3. Use the Controls</h3>
+                    <p>Toggle orbits and labels, or reset the view using the control buttons.</p>
+                </div>
+            </div>
+            <button class="tutorial-btn" id="tutorial-close">Start Exploring</button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="responsive.css">
+    <script src="script.js"></script>
+</body>
+</html>
